@@ -6,7 +6,7 @@ const fm=require('front-matter');
 const FormData = require('form-data');
 const fs = require('fs');
 const port = 6000;
-const {Medium_Token, Hashnode_Token} = require('./config.js');
+const {Medium_Token, Hashnode_Token} = require('./config/config.js');
 
 app.use(bodyParser.json());
 //////////////////////auth to medium and hashnode/////////////////////////
