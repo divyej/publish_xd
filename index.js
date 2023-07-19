@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const fm=require('front-matter');
 const FormData = require('form-data');
 const fs = require('fs');
-const port = 6000;
+const port = 8000;
 const {Medium_Token, Hashnode_Token} = require('./config/config.js');
 
 app.use(bodyParser.json());
@@ -29,6 +29,7 @@ const getBlog=async()=>{
                     brief 
                     slug 
                     coverImage
+                    contentMarkdown
                     dateAdded
                     }
                 }
@@ -42,7 +43,7 @@ const getBlog=async()=>{
         },
       }
     );
-    return res.data.data.user.publication.posts[0]
+    return res.data.data.user.publication.posts
     }
     catch(err){
         console.log(err)
@@ -50,7 +51,7 @@ const getBlog=async()=>{
 }
 
 
-getBlog("json-web-token-jwt-explained").then((res)=>{
+getBlog().then((res)=>{
     console.log(res)
 }
 )
