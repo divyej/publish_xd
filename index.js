@@ -7,6 +7,8 @@ const FormData = require('form-data');
 const fs = require('fs');
 const port = 8000;
 const {Medium_Token, Hashnode_Token} = require('./config/config.js');
+const { title } = require('process');
+const { get } = require('http');
 
 app.use(bodyParser.json());
 //////////////////////auth to medium and hashnode/////////////////////////
@@ -43,7 +45,11 @@ const getBlog=async()=>{
         },
       }
     );
-    return res.data.data.user.publication.posts
+    data=res.data.data.user.publication.posts[0]
+    console.log(data.title)
+    console.log(data.slug)
+    return data
+    
     }
     catch(err){
         console.log(err)
@@ -51,10 +57,10 @@ const getBlog=async()=>{
 }
 
 
-getBlog().then((res)=>{
-    console.log(res)
-}
-)
+getBlog().then((data)=>{
+    console.log(data)
+})
+
 
 
 
