@@ -57,22 +57,73 @@ const getBlog=async()=>{
 }
 
 
-getBlog().then((data)=>{
-    console.log(data)
-})
 
+/////////////////////////medium connection//////////////////////////////
 
-
-
-
-
-
-
-
-app.get('/', (req, res) => {
-    res.send('Hello World!');
+const postBlog=async()=>{
+    try{
+        const hashnodeData=await getBlog()
+        console.log(hashnodeData)
+        const {title, brief, slug, coverImage,  dateAdded}=hashnodeData
+        const {contentMarkdown}=(hashnodeData)
+        const preparedContent={
+            title:title,
+            contentFormat:"markdown",
+            content:contentMarkdown,
+            publishStatus:"draft",
+            slug:slug,
+            coverImage:coverImage,
+            brief:brief,
+        }
+        console.log(preparedContent)
+        return preparedContent
+        
+    }
+    catch(err){
+        console.log(err)
+    }
 }
-);
+
+postBlog()
+
+const publishToMedium=async(content)=>{
+    try{
+        const mediumUrl='https://api.medium.com/v1/users/@divj32459/posts'
+        const formData = new FormData();
+        formData.append('title', content.title);
+        formData.append('contentFormat', 'markdown');
+        formData.append('content', content.content);
+        formData.append('tags', content.tags);
+        formData.append('publishStatus', 'draft');
+       
+
+        const res=await axios.post(mediumUrl, formData, {
+            headers: {
+                Authorization: mediumHeader,
+                ...formData.getHeaders(),
+            },
+        });
+        return res.data.data;
+    }
+    catch(err){
+        console.log(err)
+    }
+}
+
+app.get('/publish', async(req, res)=>{
+    try{
+        const content=await postBlog()
+        const mediumData=await publishToMedium(content)
+        res.status(200).json({message:"content prepared and published to medium"})
+        console.log(mediumData)
+    }
+    catch(err){
+        console.log(err)
+        res.status(500).json({message:"something went wrong"})
+    }
+}
+)
+
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
